@@ -1,0 +1,33 @@
+.done{
+  color:rgba(0, 128, 0, 0.652);
+  h1{
+    color: inherit;
+  }
+  p{
+    color: rgb(68, 73, 82);
+    border-color:rgba(0, 128, 0, 0.652);
+  }
+}
+.inprogress{
+  color:rgba(80, 147, 195, 0.906);
+  h1{
+    color: inherit;
+  }
+  p{
+    color: rgb(68, 73, 82);
+    border-color:rgba(80, 147, 195, 0.906);
+  }
+}
+.todo{
+  color:rgba(255, 0, 0, 0.659);
+  h1{
+    color: inherit;
+  }
+  p{
+    color: rgb(68, 73, 82);
+    border-color:rgba(255, 0, 0, 0.659);
+  }
+}
+.dragging{
+  opacity: 0.5;
+}
