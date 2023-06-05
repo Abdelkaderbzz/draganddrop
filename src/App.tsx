@@ -42,7 +42,7 @@ const App = (): JSX.Element => {
   const [indexes, setIndexes] = useState({ firstIndex: -1, lastIndex: -1 });
   const [textareaValue, setTextareaValue] = useState('');
   const addTask = () => {
-    if (textareaValue) {
+    if (textareaValue.trim.length>1) {
       setTodoList((prev) => {
         const updatedTodoList = [...prev];
         updatedTodoList[2].push(textareaValue);
