@@ -150,7 +150,7 @@ const App = (): JSX.Element => {
         </>
       )}
       <div className='w-screen flex flex-col items-center justify-start'>
-        <h1 className='mt-8'>ToDo App</h1>
+        <h1 className='mt-8'>list-ninja</h1>
         <div className='max-w-[1200px] mx-auto flex justify-center items-stretch min-h-screen bg-gray-100'>
           {todoList.map((todo, index) => (
             <div
