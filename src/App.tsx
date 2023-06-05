@@ -1,13 +1,10 @@
 import './app.scss';
-import { ReactNode, useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { MdCreate } from 'react-icons/md';
-console.log(uuidv4());
-console.log(uuidv4());
-console.log(uuidv4());
-console.log(uuidv4());
-console.log(uuidv4());
+import Overlay from './components/Overlay/Overlay';
 
 const App = (): JSX.Element => {
   const [todoList, setTodoList] = useState<string[][]>([
@@ -109,6 +106,7 @@ const App = (): JSX.Element => {
     };
   }, [todoList]);
   const [create, setCreate] = useState(false);
+  const [backdrop, setBackdrop] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const addTask = () => {
     if (textareaValue) {
@@ -119,69 +117,116 @@ const App = (): JSX.Element => {
       });
       setCreate(!create);
       setTextareaValue('');
+      toast.success('added task successfully');
     } else {
       setCreate(!create);
     }
   };
+  const handleUpdate = () => {
+    console.log('update');
+    setBackdrop(true);
+  };
+  const handleRemove = (index: number, taskIndex: number) => {
+    setTodoList((prev) => {
+      const updatedTodoList = [...prev];
+      updatedTodoList[index].splice(taskIndex, 1);
+      return updatedTodoList;
+    });
+    toast.error('task deleted successfully');
+  };
+
   return (
-    <div className='w-screen flex flex-col items-center justify-start'>
-      <h1 className='mt-8'>ToDo App</h1>
-      <div className='max-w-[1200px] mx-auto flex justify-center items-stretch min-h-screen bg-gray-100'>
-        {todoList.map((todo, index) => (
-          <div
-            className={`w-3/4 p-4 my-4 rounded-lg shadow-lg ${
-              index === 0
-                ? 'done container'
-                : index === 1
-                ? 'inprogress container'
-                : 'todo container'
-            }`}
-            key={index}
-          >
-            <h1 className='text-2xl font-bold'>
-              {index === 0 ? 'Done' : index === 1 ? 'In Progress' : 'To Do'}
-            </h1>
-            {todo.map((task: string, taskIndex: number) => (
-              <div
-                key={taskIndex}
-                className='flex flex-row-reverse justify-between my-2 border border-gray-500 p-1 cursor-pointer draggable'
-                draggable='true'
-              >
-                <nav className='flex m-1 gap-1 justify-between items-start opacity-0 hover:opacity-100'>
-                  <MdCreate className='text-green-500 w-6' />
-                  <AiFillDelete className='text-red-300 w-6' />
-                </nav>
-                <p>{task}</p>
+    <>
+      <ToastContainer autoClose={501} theme='colored' />
+      {backdrop && (
+        <>
+          <Overlay />{' '}
+          <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
+            <div className=' flex flex-col items-center justify-center bg-white rounded-lg p-8 shadow-lg'>
+              <textarea
+                className='w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500 text-black bg-white'
+                placeholder='Enter your text here'
+              />
+
+              <div className='flex justify-end'>
+                <button className='px-4 py-2 mr-2 text-white bg-red-500 rounded-lg hover:bg-red-600'>
+                  Cancel
+                </button>
+                <button className='px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600'>
+                  Update
+                </button>
               </div>
-            ))}
-            {index === 2 ? (
-              create ? (
-                <>
-                  <textarea
-                    value={textareaValue}
-                    onChange={(e) => setTextareaValue(e.target.value)}
-                    className='resize-none bg-gray-200 text-gray-800 text-lg w-full'
-                  ></textarea>
+            </div>
+          </div>
+        </>
+      )}
+      <div className='w-screen flex flex-col items-center justify-start'>
+        <h1 className='mt-8'>ToDo App</h1>
+        <div className='max-w-[1200px] mx-auto flex justify-center items-stretch min-h-screen bg-gray-100'>
+          {todoList.map((todo, index) => (
+            <div
+              className={` min-w-[250px] w-3/4 p-4 my-4 rounded-lg shadow-lg ${
+                index === 0
+                  ? 'done container'
+                  : index === 1
+                  ? 'inprogress container'
+                  : 'todo container'
+              }`}
+              key={index}
+            >
+              <h1 className='text-2xl font-bold'>
+                {index === 0 ? 'Done' : index === 1 ? 'In Progress' : 'To Do'}
+              </h1>
+              {todo.map((task: string, taskIndex: number) => {
+                return (
+                  <div
+                    key={taskIndex}
+                    className='flex flex-row-reverse justify-between my-2 border border-gray-500 p-1 cursor-pointer draggable'
+                    draggable='true'
+                  >
+                    <nav className='flex m-1 gap-1 justify-between items-start opacity-0 hover:opacity-100'>
+                      <MdCreate
+                        onClick={() => handleUpdate(index, taskIndex)}
+                        className='text-green-500 w-6'
+                      />
+                      <AiFillDelete
+                        onClick={() => handleRemove(index, taskIndex)}
+                        className='text-red-300 w-6'
+                      />
+                    </nav>
+                    <p>{task}</p>
+                  </div>
+                );
+              })}
+              {index === 2 ? (
+                create ? (
+                  <>
+                    <textarea
+                      value={textareaValue}
+                      onChange={(e) => setTextareaValue(e.target.value)}
+                      className='resize-none bg-gray-200 text-gray-800 text-lg w-full'
+                    ></textarea>
+                    <button
+                      onClick={() => addTask()}
+                      className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full border-none outline-none'
+                    >
+                      Submit
+                    </button>
+                  </>
+                ) : (
                   <button
-                    onClick={() => addTask()}
+                    onClick={() => setCreate(!create)}
                     className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full border-none outline-none'
                   >
-                    Submit
+                    Create a Task
                   </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setCreate(!create)}
-                  className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full border-none outline-none'
-                >
-                  Create a Task
-                </button>
-              )
-            ) : undefined}
-          </div>
-        ))}
+                )
+              ) : undefined}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
