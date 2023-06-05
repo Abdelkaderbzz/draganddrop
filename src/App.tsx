@@ -107,6 +107,8 @@ const App = (): JSX.Element => {
   }, [todoList]);
   const [create, setCreate] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
+  const [updatedValue, setUpdatedValue] = useState('');
+  const [indexes, setIndexes] = useState({ firstIndex: -1, lastIndex: -1 });
   const [textareaValue, setTextareaValue] = useState('');
   const addTask = () => {
     if (textareaValue) {
@@ -122,10 +124,29 @@ const App = (): JSX.Element => {
       setCreate(!create);
     }
   };
-  const handleUpdate = () => {
-    console.log('update');
-    setBackdrop(true);
+  const handleUpdate = (index: number, taskIndex: number, submit: string) =>
+  {
+    if (updatedValue.length < 1 && submit==='submit')
+    {
+      toast.info('Invalid task value')
+    }
+    else if (submit === 'submit')
+    {
+    setTodoList((prev) => {
+      const updatedTodoList = [...prev];
+      updatedTodoList[indexes.firstIndex].splice(indexes.lastIndex, 1, updatedValue);
+      return updatedTodoList;
+    });
+      setBackdrop(false)
+      toast.success("Task updated successfully")
+    } else
+    {
+      setBackdrop(true);
+      setIndexes({ firstIndex: index, lastIndex: taskIndex });
+      setUpdatedValue(todoList[index][taskIndex]);
+    }
   };
+
   const handleRemove = (index: number, taskIndex: number) => {
     setTodoList((prev) => {
       const updatedTodoList = [...prev];
@@ -144,15 +165,22 @@ const App = (): JSX.Element => {
           <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
             <div className=' flex flex-col items-center justify-center bg-white rounded-lg p-8 shadow-lg'>
               <textarea
-                className='w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500 text-black bg-white'
-                placeholder='Enter your text here'
+                value={updatedValue}
+                onChange={(e) => setUpdatedValue(e.target.value)}
+                className='w-[300px] h-[120px] px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500 text-black bg-white'
+                placeholder='Enter your task here'
               />
-
               <div className='flex justify-end'>
-                <button className='px-4 py-2 mr-2 text-white bg-red-500 rounded-lg hover:bg-red-600'>
+                <button
+                  onClick={() => setBackdrop(false)}
+                  className='px-4 py-2 mr-2 text-white bg-red-500 rounded-lg hover:bg-red-600'
+                >
                   Cancel
                 </button>
-                <button className='px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600'>
+                <button
+                  onClick={() => handleUpdate(-1, -1, 'submit')}
+                  className='px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600'
+                >
                   Update
                 </button>
               </div>
@@ -186,7 +214,7 @@ const App = (): JSX.Element => {
                   >
                     <nav className='flex m-1 gap-1 justify-between items-start opacity-0 hover:opacity-100'>
                       <MdCreate
-                        onClick={() => handleUpdate(index, taskIndex)}
+                        onClick={() => handleUpdate(index, taskIndex,"")}
                         className='text-green-500 w-6'
                       />
                       <AiFillDelete
