@@ -1,7 +1,7 @@
 import './app.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { MdCreate } from 'react-icons/md';
 import Overlay from './components/Overlay/Overlay';
@@ -36,75 +36,6 @@ const App = (): JSX.Element => {
 
     setTodoList(parsedTodoList);
   }, []);
-  type drag = any;
-  useEffect(() => {
-    localStorage.setItem('todoList', JSON.stringify(todoList));
-    const handleDragStart = (e: any) => {
-      e.currentTarget.classList.add('dragging');
-    };
-
-    const handleDragEnd = (e: any) => {
-      e.currentTarget.classList.remove('dragging');
-    };
-
-    const handleDragOver = (e: any, container: Element) => {
-      e.preventDefault();
-      const afterElement = getDragAfterElement(container, e.clientY);
-      const draggable: drag = document.querySelector('.dragging');
-
-      if (afterElement == null) {
-        container.appendChild(draggable);
-      } else {
-        container.insertBefore(draggable, afterElement);
-      }
-    };
-
-    const getDragAfterElement = (container: Element, y: number) => {
-      const draggableElements = [
-        ...container.querySelectorAll('.draggable:not(.dragging)'),
-      ];
-
-      return draggableElements.reduce(
-        (closest, child) => {
-          const box = child.getBoundingClientRect();
-          const offset = y - box.top - box.height / 2;
-
-          if (offset < 0 && offset > closest.offset) {
-            return { offset, element: child };
-          } else {
-            return closest;
-          }
-        },
-        { offset: Number.POSITIVE_INFINITY }
-      ).element;
-    };
-
-    const draggables = document.querySelectorAll('.draggable');
-    const containers = document.querySelectorAll('.container');
-
-    draggables.forEach((draggable) => {
-      draggable.addEventListener('dragstart', handleDragStart);
-      draggable.addEventListener('dragend', handleDragEnd);
-    });
-
-    containers.forEach((container) => {
-      container.addEventListener('dragover', (e) =>
-        handleDragOver(e, container)
-      );
-    });
-    return () => {
-      draggables.forEach((draggable) => {
-        draggable.removeEventListener('dragstart', handleDragStart);
-        draggable.removeEventListener('dragend', handleDragEnd);
-      });
-
-      containers.forEach((container) => {
-        container.removeEventListener('dragover', (e) =>
-          handleDragOver(e, container)
-        );
-      });
-    };
-  }, [todoList]);
   const [create, setCreate] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
   const [updatedValue, setUpdatedValue] = useState('');
@@ -124,23 +55,22 @@ const App = (): JSX.Element => {
       setCreate(!create);
     }
   };
-  const handleUpdate = (index: number, taskIndex: number, submit: string) =>
-  {
-    if (updatedValue.length < 1 && submit==='submit')
-    {
-      toast.info('Invalid task value')
-    }
-    else if (submit === 'submit')
-    {
-    setTodoList((prev) => {
-      const updatedTodoList = [...prev];
-      updatedTodoList[indexes.firstIndex].splice(indexes.lastIndex, 1, updatedValue);
-      return updatedTodoList;
-    });
-      setBackdrop(false)
-      toast.success("Task updated successfully")
-    } else
-    {
+  const handleUpdate = (index: number, taskIndex: number, submit: string) => {
+    if (updatedValue.length < 1 && submit === 'submit') {
+      toast.info('Invalid task value');
+    } else if (submit === 'submit') {
+      setTodoList((prev) => {
+        const updatedTodoList = [...prev];
+        updatedTodoList[indexes.firstIndex].splice(
+          indexes.lastIndex,
+          1,
+          updatedValue
+        );
+        return updatedTodoList;
+      });
+      setBackdrop(false);
+      toast.success('Task updated successfully');
+    } else {
       setBackdrop(true);
       setIndexes({ firstIndex: index, lastIndex: taskIndex });
       setUpdatedValue(todoList[index][taskIndex]);
@@ -156,14 +86,45 @@ const App = (): JSX.Element => {
     toast.error('task deleted successfully');
   };
 
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    index: number,
+    taskIndex: number
+  ) => {
+    event.dataTransfer.setData('text/plain', `${index},${taskIndex}`);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    index: number
+  ) => {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text/plain');
+    const [draggedIndex, draggedTaskIndex] = data.split(',');
+    const convertedDraggedIndex = parseInt(draggedIndex, 10);
+    const convertedDraggedTaskIndex = parseInt(draggedTaskIndex, 10);
+    const updatedTodoList: string[][] = [...todoList];
+    const task =
+      updatedTodoList[convertedDraggedIndex][convertedDraggedTaskIndex];
+    updatedTodoList[convertedDraggedIndex].splice(convertedDraggedTaskIndex, 1);
+    updatedTodoList[index].push(task);
+    setTodoList(updatedTodoList);
+  };
+  useEffect(() => {
+    localStorage.setItem('todoList', JSON.stringify(todoList));
+  }, [todoList]);
   return (
     <>
       <ToastContainer autoClose={501} theme='colored' />
       {backdrop && (
         <>
-          <Overlay />{' '}
+          <Overlay />
           <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
-            <div className=' flex flex-col items-center justify-center bg-white rounded-lg p-8 shadow-lg'>
+            <div className='flex flex-col items-center justify-center bg-white rounded-lg p-8 shadow-lg'>
               <textarea
                 value={updatedValue}
                 onChange={(e) => setUpdatedValue(e.target.value)}
@@ -193,7 +154,7 @@ const App = (): JSX.Element => {
         <div className='max-w-[1200px] mx-auto flex justify-center items-stretch min-h-screen bg-gray-100'>
           {todoList.map((todo, index) => (
             <div
-              className={` min-w-[250px] w-3/4 p-4 my-4 rounded-lg shadow-lg ${
+              className={`min-w-[290px] w-3/4 p-4 my-4 rounded-lg shadow-lg ${
                 index === 0
                   ? 'done container'
                   : index === 1
@@ -201,6 +162,8 @@ const App = (): JSX.Element => {
                   : 'todo container'
               }`}
               key={index}
+              onDragOver={handleDragOver}
+              onDrop={(event) => handleDrop(event, index)}
             >
               <h1 className='text-2xl font-bold'>
                 {index === 0 ? 'Done' : index === 1 ? 'In Progress' : 'To Do'}
@@ -210,11 +173,14 @@ const App = (): JSX.Element => {
                   <div
                     key={taskIndex}
                     className='flex flex-row-reverse justify-between my-2 border border-gray-500 p-1 cursor-pointer draggable'
-                    draggable='true'
+                    draggable
+                    onDragStart={(event) =>
+                      handleDragStart(event, index, taskIndex)
+                    }
                   >
                     <nav className='flex m-1 gap-1 justify-between items-start opacity-0 hover:opacity-100'>
                       <MdCreate
-                        onClick={() => handleUpdate(index, taskIndex,"")}
+                        onClick={() => handleUpdate(index, taskIndex, '')}
                         className='text-green-500 w-6'
                       />
                       <AiFillDelete
