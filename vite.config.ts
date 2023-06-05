@@ -11,7 +11,7 @@ export default defineConfig({
       fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
-      input:'src/index.ts',
+      input:'src/main.tsx',
       external: ["react", "react-dom"],
       output: {
         globals: {
