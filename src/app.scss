@@ -31,3 +31,19 @@
 .dragging{
   opacity: 0.5;
 }
+.task{
+  width: 100%;
+  height: fit-content;
+}
+.draggable{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  border:1px solid blue;
+  padding: 10px;
+  cursor: pointer;
+  margin: 8px;
+  width: 100%;
+  height: auto; /* Adjust the height value as needed */
+  overflow: auto;
+}

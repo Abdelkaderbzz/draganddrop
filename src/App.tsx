@@ -150,26 +150,11 @@ const App = (): JSX.Element => {
         </>
       )}
       <div className='w-screen flex flex-col items-center justify-start'>
-        <h1 className='mt-8'>list-ninja</h1>
-        {/* <a href='#' className='wisp'>
-          <svg
-            fill='none'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            stroke-width='2'
-            width='22'
-            height='22'
-            viewBox='0 0 24 24'
-            stroke='black'
-            xmlns='<http://www.w3.org/2000/svg>'
-          >
-            <path d='M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'></path>
-          </svg>
-        </a> */}
-        <div className='max-w-[1200px] mx-auto flex justify-center items-stretch min-h-screen bg-gray-100'>
+        <h1 className='mt-8 title'>list-ninja</h1>
+        <div className='max-w-[1200px] mx-auto flex justify-start items-stretch min-h-screen bg-gray-100'>
           {todoList.map((todo, index) => (
             <div
-              className={`min-w-[290px] w-3/4 p-4 my-4 rounded-lg shadow-lg ${
+              className={`flex flex-col items-center  min-w-[290px] w-3/4 p-4 my-4 rounded-lg shadow-lg ${
                 index === 0
                   ? 'done container'
                   : index === 1
@@ -187,7 +172,7 @@ const App = (): JSX.Element => {
                 return (
                   <div
                     key={taskIndex}
-                    className='flex flex-row-reverse justify-between my-2 border border-gray-500 p-1 cursor-pointer draggable'
+                    className='draggable'
                     draggable
                     onDragStart={(event) =>
                       handleDragStart(event, index, taskIndex)
@@ -203,7 +188,8 @@ const App = (): JSX.Element => {
                         className='text-red-300 w-6'
                       />
                     </nav>
-                    <p>{task}</p>
+                    <span>{task}</span>
+                    
                   </div>
                 );
               })}
