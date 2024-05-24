@@ -65,6 +65,10 @@ const App = (): JSX.Element => {
       try {
         const parsedJson = JSON.parse(jsonInput);
         setJsonData(parsedJson);
+        const event = new CustomEvent('popups-data', {
+          detail:parsedJson,
+        });
+        window.dispatchEvent(event);
         alert('JSON is valid and has been set to the state.');
       } catch (error) {
         alert('Invalid JSON. Please correct it and try again.');
