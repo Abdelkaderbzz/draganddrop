@@ -37,6 +37,8 @@ const App = (): JSX.Element => {
     setTodoList(parsedTodoList);
   }, []);
   const [create, setCreate] = useState(false);
+    const [jsonInput, setJsonInput] = useState('');
+    const [jsonData, setJsonData] = useState(null);
   const [backdrop, setBackdrop] = useState(false);
   const [updatedValue, setUpdatedValue] = useState('');
   const [indexes, setIndexes] = useState({ firstIndex: -1, lastIndex: -1 });
@@ -55,6 +57,19 @@ const App = (): JSX.Element => {
       setCreate(!create);
     }
   };
+    const handleInputChange = (e:any) => {
+      setJsonInput(e.target.value);
+    };
+
+    const handleJsonSubmit = () => {
+      try {
+        const parsedJson = JSON.parse(jsonInput);
+        setJsonData(parsedJson);
+        alert('JSON is valid and has been set to the state.');
+      } catch (error) {
+        alert('Invalid JSON. Please correct it and try again.');
+      }
+    };
   const handleUpdate = (index: number, taskIndex: number, submit: string) => {
     if (updatedValue.length < 1 && submit === 'submit') {
       toast.info('Invalid task value');
@@ -151,6 +166,32 @@ const App = (): JSX.Element => {
       )}
       <div className='w-screen flex flex-col items-center justify-start'>
         <h1 className='mt-8 title'>list-ninja</h1>
+        <textarea
+          style={{
+            width: '500px',
+            color: '#000',
+            background: '#fff',
+            border: '1px solid',
+          }}
+          rows={10}
+          value={jsonInput}
+          onChange={handleInputChange}
+          placeholder='Enter JSON here...'
+        />
+        <button
+          style={{
+            margin: '10px',
+            backgroundColor:'#ddd',
+            padding: '5px 12px',
+            color: '#000',
+            background: '#fff',
+            border: '1px solid',
+          }}
+          onClick={handleJsonSubmit}
+          
+        >
+          Submit JSON
+        </button>
         <div className='max-w-[1200px] mx-auto flex justify-start items-stretch min-h-screen bg-gray-100'>
           {todoList.map((todo, index) => (
             <div
@@ -189,7 +230,6 @@ const App = (): JSX.Element => {
                       />
                     </nav>
                     <span>{task}</span>
-                    
                   </div>
                 );
               })}
