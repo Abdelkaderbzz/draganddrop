@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { MdCreate } from 'react-icons/md';
 import Overlay from './components/Overlay/Overlay';
+import { message } from 'antd';
 
 const App = (): JSX.Element => {
   const [todoList, setTodoList] = useState<string[][]>([
@@ -69,9 +70,9 @@ const App = (): JSX.Element => {
           detail:parsedJson,
         });
         window.dispatchEvent(event);
-        alert('JSON is valid and has been set to the state.');
+        message.success('JSON is valid and has been set to the state.');
       } catch (error) {
-        alert('Invalid JSON. Please correct it and try again.');
+        message.error('Invalid JSON. Please correct it and try again.');
       }
     };
   const handleUpdate = (index: number, taskIndex: number, submit: string) => {
@@ -147,7 +148,7 @@ const App = (): JSX.Element => {
               <textarea
                 value={updatedValue}
                 onChange={(e) => setUpdatedValue(e.target.value)}
-                className='w-[300px] h-[120px] px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500 text-black bg-white'
+                className='w-[300px] h-[120px] px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500 text-black bg-white p-5'
                 placeholder='Enter your task here'
               />
               <div className='flex justify-end'>
@@ -173,6 +174,7 @@ const App = (): JSX.Element => {
         <textarea
           style={{
             width: '500px',
+            padding:'5px',
             color: '#000',
             background: '#fff',
             border: '1px solid',
@@ -185,14 +187,13 @@ const App = (): JSX.Element => {
         <button
           style={{
             margin: '10px',
-            backgroundColor:'#ddd',
+            backgroundColor: '#ddd',
             padding: '5px 12px',
             color: '#000',
             background: '#fff',
             border: '1px solid',
           }}
           onClick={handleJsonSubmit}
-          
         >
           Submit JSON
         </button>
