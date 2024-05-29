@@ -6,6 +6,7 @@ import { AiFillDelete } from 'react-icons/ai';
 import { MdCreate } from 'react-icons/md';
 import Overlay from './components/Overlay/Overlay';
 import { message } from 'antd';
+import Component from './IntercomIntegration';
 
 const App = (): JSX.Element => {
   const [todoList, setTodoList] = useState<string[][]>([
@@ -184,6 +185,7 @@ const App = (): JSX.Element => {
           onChange={handleInputChange}
           placeholder='Enter JSON here...'
         />
+        <Component />
         <button
           style={{
             margin: '10px',
