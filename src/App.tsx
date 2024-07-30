@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { MdCreate } from 'react-icons/md';
 import Overlay from './components/Overlay/Overlay';
-import { message } from 'antd';
+import { Flex, message } from 'antd';
 import Component from './IntercomIntegration';
 
 const App = (): JSX.Element => {
@@ -39,8 +39,8 @@ const App = (): JSX.Element => {
     setTodoList(parsedTodoList);
   }, []);
   const [create, setCreate] = useState(false);
-    const [jsonInput, setJsonInput] = useState('');
-    const [jsonData, setJsonData] = useState(null);
+  const [jsonInput, setJsonInput] = useState('');
+  const [jsonData, setJsonData] = useState(null);
   const [backdrop, setBackdrop] = useState(false);
   const [updatedValue, setUpdatedValue] = useState('');
   const [indexes, setIndexes] = useState({ firstIndex: -1, lastIndex: -1 });
@@ -59,23 +59,23 @@ const App = (): JSX.Element => {
       setCreate(!create);
     }
   };
-    const handleInputChange = (e:any) => {
-      setJsonInput(e.target.value);
-    };
+  const handleInputChange = (e: any) => {
+    setJsonInput(e.target.value);
+  };
 
-    const handleJsonSubmit = () => {
-      try {
-        const parsedJson = JSON.parse(jsonInput);
-        setJsonData(parsedJson);
-        const event = new CustomEvent('popups-data', {
-          detail:parsedJson,
-        });
-        window.dispatchEvent(event);
-        message.success('JSON is valid and has been set to the state.');
-      } catch (error) {
-        message.error('Invalid JSON. Please correct it and try again.');
-      }
-    };
+  const handleJsonSubmit = () => {
+    try {
+      const parsedJson = JSON.parse(jsonInput);
+      setJsonData(parsedJson);
+      const event = new CustomEvent('popups-data', {
+        detail: parsedJson,
+      });
+      window.dispatchEvent(event);
+      message.success('JSON is valid and has been set to the state.');
+    } catch (error) {
+      message.error('Invalid JSON. Please correct it and try again.');
+    }
+  };
   const handleUpdate = (index: number, taskIndex: number, submit: string) => {
     if (updatedValue.length < 1 && submit === 'submit') {
       toast.info('Invalid task value');
@@ -142,7 +142,7 @@ const App = (): JSX.Element => {
     <>
       <ToastContainer autoClose={501} theme='colored' />
       {backdrop && (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
           <Overlay />
           <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
             <div className='flex flex-col items-center justify-center bg-white rounded-lg p-8 shadow-lg'>
@@ -168,41 +168,13 @@ const App = (): JSX.Element => {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
-      <div className='w-screen flex flex-col items-center justify-start'>
-        <h1 className='mt-8 title'>list-ninja</h1>
-        <textarea
-          style={{
-            width: '500px',
-            padding:'5px',
-            color: '#000',
-            background: '#fff',
-            border: '1px solid',
-          }}
-          rows={10}
-          value={jsonInput}
-          onChange={handleInputChange}
-          placeholder='Enter JSON here...'
-        />
-        <Component />
-        <button
-          style={{
-            margin: '10px',
-            backgroundColor: '#ddd',
-            padding: '5px 12px',
-            color: '#000',
-            background: '#fff',
-            border: '1px solid',
-          }}
-          onClick={handleJsonSubmit}
-        >
-          Submit JSON
-        </button>
-        <div className='max-w-[1200px] mx-auto flex justify-start items-stretch min-h-screen bg-gray-100'>
+      <div style={{ width:'100%' }}>
+        <div className='mx-auto flex justify-start items-stretch min-h-screen bg-gray-100'>
           {todoList.map((todo, index) => (
             <div
-              className={`flex flex-col items-center  min-w-[290px] w-3/4 p-4 my-4 rounded-lg shadow-lg ${
+              className={`flex flex-col items-center  min-w-[190px] w-3/4 p-2 rounded-lg shadow-lg ${
                 index === 0
                   ? 'done container'
                   : index === 1
@@ -266,6 +238,36 @@ const App = (): JSX.Element => {
               ) : undefined}
             </div>
           ))}
+        </div>
+        <div style={{display:'flex' ,justifyContent:'center'}} className=' w-[1200px] flex-col justify-center items-center'>
+          <h1 className='mt-8 title'>list-ninja</h1>
+          <textarea
+            style={{
+              width: '500px',
+              padding: '5px',
+              color: '#000',
+              background: '#fff',
+              border: '1px solid',
+            }}
+            rows={10}
+            value={jsonInput}
+            onChange={handleInputChange}
+            placeholder='Enter JSON here...'
+          />
+          <Component />
+          <button
+            style={{
+              margin: '10px',
+              backgroundColor: '#ddd',
+              padding: '5px 12px',
+              color: '#000',
+              background: '#fff',
+              border: '1px solid',
+            }}
+            onClick={handleJsonSubmit}
+          >
+            Submit JSON
+          </button>
         </div>
       </div>
     </>
