@@ -11,7 +11,26 @@
       <div id="disqus_thread"></div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>document.addEventListener("DOMContentLoaded",function(){let e=document.createElement("script");e.src="https://public-integration.netlify.app/assets/public-integration.js",document.body.appendChild(e)})</script>
+    <script>
+      window.user = {
+        memberId: '64',
+        token: '',
+        domaineName: 'studentnew.takiacademy.me',
+        devices: 'web',
+        metaData: {
+          firstname: 'aymen',
+          lastname: 'mosrati',
+        },
+      };
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        let e = document.createElement('script');
+        (e.src =
+          'https://popups-push-notification-integration.vercel.app/index.js'),
+          document.body.appendChild(e);
+      });
+    </script>
     <!-- <script>
       document.addEventListener('DOMContentLoaded', function () {
         let e = document.createElement('script');
@@ -26,6 +45,5 @@
           document.body.appendChild(e);
       });
     </script> -->
-  
   </body>
 </html>
