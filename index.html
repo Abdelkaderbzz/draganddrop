@@ -5,6 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>listninja</title>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "6c540eda-b46e-4af4-8e65-1a2677c8522b",
+    });
+  });
+</script>
   </head>
   <body>
     <div id="root">
@@ -23,14 +32,7 @@
         },
       };
     </script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        let e = document.createElement('script');
-        (e.src =
-          'https://popups-push-notification-integration.vercel.app/index.js'),
-          document.body.appendChild(e);
-      });
-    </script>
+  
     <!-- <script>
       document.addEventListener('DOMContentLoaded', function () {
         let e = document.createElement('script');
